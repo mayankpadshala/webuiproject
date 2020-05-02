@@ -29,6 +29,7 @@ app.use(function (req, res, next) {
 
 app.use("/user", require('./routes/User.js'));
 app.use("/data", require('./routes/Data.js'));
+app.use("/chart", require('./routes/Chart.js'));
 
 // error handling middleware
 app.use(function (err, req, res, next) {
