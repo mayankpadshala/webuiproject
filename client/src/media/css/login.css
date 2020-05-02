@@ -1,0 +1,20 @@
+.login-root{
+    background-image: linear-gradient(135deg, #f9f9eb, #12575f);
+    min-height: 100vh;
+    width: 100%;
+}
+.login-center-box{
+    background-color: #ffffff;
+    padding: 25px !important;
+}
+.login-form-button{
+    width: 100%;
+}
+.login-form-common-err{
+    text-align: center;
+    color: #ff0000 !important;
+}
+.login-logo{
+    width: 150px;
+    height: 150px;
+}

@@ -17,6 +17,7 @@
     "e": "0.0.4",
     "express": "^4.17.1",
     "https-proxy-agent": "^5.0.0",
+    "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.7",
     "mongoose-validator": "^2.1.0",
