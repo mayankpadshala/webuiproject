@@ -1,0 +1,10 @@
+.countriesMap-mapsize{
+    /* background-color: #ff0000 !important; */
+}
+.countriesMap-mapsize svg{
+    min-height: 550px;
+}
+
+.jvectormap-tip{
+    display: none !important;
+}

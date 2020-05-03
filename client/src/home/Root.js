@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import CountriesMap from "../charts/CountriesMap";
 
 
 class Root extends React.Component {
@@ -13,7 +13,8 @@ class Root extends React.Component {
 	render() {
 		return (
 			<div className="common-root">
-				<h1>Root</h1>
+				{/* <h1>Root</h1> */}
+				<CountriesMap />
 			</div>
 		);
 	}
