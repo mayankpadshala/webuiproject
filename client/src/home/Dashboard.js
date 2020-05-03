@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import USMAP from "../charts/USMAP";
 
 class Dashboard extends React.Component {

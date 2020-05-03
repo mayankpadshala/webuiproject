@@ -31,6 +31,15 @@ ChartRoutes.get("/usamap", async (req, res, next) => {
         next(error)
     }
 })
+ChartRoutes.get("/countriesMap", async (req, res, next) => {
+    try {
+        let data = await axios.get(
+            `https://api.coronatab.app/places?typeId=country`);
+        res.status(200).send(data.data);
+    } catch (error) {
+        next(error)
+    }
+})
 
 ChartRoutes.get("/:country/:state", async (req, res, next) => {
     try {

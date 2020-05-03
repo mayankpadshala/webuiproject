@@ -11,10 +11,12 @@
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "clsx": "^1.1.0",
+    "countries-map": "^3.0.0",
     "moment": "^2.24.0",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
+    "react-jvectormap": "0.0.16",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-usa-map": "^1.4.0"
