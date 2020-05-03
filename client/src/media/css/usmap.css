@@ -1,0 +1,14 @@
+.usmap-size{
+    width: 600px;
+    height: 600px;
+}
+.usmap-details-keys{
+    font-size: 20px;
+    color: #000000;
+    font-weight: 600;
+}
+.usmap-details-values{
+    font-size: 20px;
+    color: #444444;
+    font-weight: 500;
+}

@@ -1,6 +1,7 @@
 const express = require("express");
 const ChartRoutes = express.Router();
 const Data = require("../models/data");
+const axios = require("axios");
 
 // ====================== GET ========================================
 ChartRoutes.get("/all", async (req, res, next) => {
@@ -13,7 +14,7 @@ ChartRoutes.get("/all", async (req, res, next) => {
 })
 ChartRoutes.get("/id/:id", async (req, res, next) => {
     try {
-        let data = await (await Data.findById(req.params.id));
+        let data = await Data.findById(req.params.id);
         res.status(200).send(data);
     } catch (error) {
         next(error)
@@ -21,6 +22,15 @@ ChartRoutes.get("/id/:id", async (req, res, next) => {
 })
 // ====================== POST ========================================
 
+ChartRoutes.get("/usamap", async (req, res, next) => {
+    try {
+        let data = await axios.get(
+            `https://api.coronatab.app/places?typeId=country&include[]=children&name=United States of America`);
+        res.status(200).send(data.data);
+    } catch (error) {
+        next(error)
+    }
+})
 // ====================== PUT ========================================
 
 module.exports = ChartRoutes;
