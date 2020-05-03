@@ -5,6 +5,7 @@ import "../media/css/home.css";
 import Root from "./Root";
 import Dashboard from "./Dashboard";
 import UserStatus from "../UserStatus";
+import States from "../charts/States";
 const { Header, Content, Footer } = Layout;
 
 class Home extends React.Component {
@@ -14,7 +15,7 @@ class Home extends React.Component {
 		this.props.history.push("/login");
 		// this.props.logout();
 	};
-	componentDidMount(){
+	componentDidMount() {
 		// this.props.history.push("/home/cricketer/create");
 		// this.props.history.push("/home/cricketer/list");
 	}
@@ -29,8 +30,9 @@ class Home extends React.Component {
 						defaultSelectedKeys={["1"]}
 						style={{ lineHeight: "64px" }}
 					>
-						<Menu.Item key="1" onClick={()=>this.props.history.push("/home/root")} >Home</Menu.Item>
-						<Menu.Item key="2" onClick={()=>this.props.history.push("/home/dashboard")} >Dashboard</Menu.Item>
+						<Menu.Item key="1" onClick={() => this.props.history.push("/home/root")} >Home</Menu.Item>
+						<Menu.Item key="2" onClick={() => this.props.history.push("/home/dashboard")} >Dashboard</Menu.Item>
+						<Menu.Item key="3" onClick={() => this.props.history.push("/home/states")} >States</Menu.Item>
 						<Menu.Item
 							key="4"
 							className="logout-btn"
@@ -53,20 +55,21 @@ class Home extends React.Component {
 						<Switch>
 							<Route
 								path="/home/root"
-								render={() => <Root history={this.props.history}/>}
-								/>
+								render={() => <Root history={this.props.history} />}
+							/>
 							<Route
 								path="/home/dashboard"
-								render={() => <Dashboard  history={this.props.history}/>}
-								/>
-							{/* <Route
-								render={() => <Root  history={this.props.history}/>}
-							/> */}
+								render={() => <Dashboard history={this.props.history} />}
+							/>
+							<Route
+								path="/home/states"
+								render={() => <States history={this.props.history} />}
+							/>
 						</Switch>
 					</div>
 				</Content>
 				<Footer style={{ textAlign: "center" }}>
-					
+
 				</Footer>
 			</Layout>
 		);

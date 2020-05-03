@@ -7,67 +7,67 @@ const bcrypt = require("bcryptjs");
 
 const API = "https://covidtracking.com/api/v1"
 //states/20200331.json
-const states = {
-	"AL": "Alabama",
-	"AK": "Alaska",
-	"AS": "American Samoa",
-	"AZ": "Arizona",
-	"AR": "Arkansas",
-	"CA": "California",
-	"CO": "Colorado",
-	"CT": "Connecticut",
-	"DE": "Delaware",
-	"DC": "District Of Columbia",
-	"FM": "Federated States Of Micronesia",
-	"FL": "Florida",
-	"GA": "Georgia",
-	"GU": "Guam",
-	"HI": "Hawaii",
-	"ID": "Idaho",
-	"IL": "Illinois",
-	"IN": "Indiana",
-	"IA": "Iowa",
-	"KS": "Kansas",
-	"KY": "Kentucky",
-	"LA": "Louisiana",
-	"ME": "Maine",
-	"MH": "Marshall Islands",
-	"MD": "Maryland",
-	"MA": "Massachusetts",
-	"MI": "Michigan",
-	"MN": "Minnesota",
-	"MS": "Mississippi",
-	"MO": "Missouri",
-	"MT": "Montana",
-	"NE": "Nebraska",
-	"NV": "Nevada",
-	"NH": "New Hampshire",
-	"NJ": "New Jersey",
-	"NM": "New Mexico",
-	"NY": "New York",
-	"NC": "North Carolina",
-	"ND": "North Dakota",
-	"MP": "Northern Mariana Islands",
-	"OH": "Ohio",
-	"OK": "Oklahoma",
-	"OR": "Oregon",
-	"PW": "Palau",
-	"PA": "Pennsylvania",
-	"PR": "Puerto Rico",
-	"RI": "Rhode Island",
-	"SC": "South Carolina",
-	"SD": "South Dakota",
-	"TN": "Tennessee",
-	"TX": "Texas",
-	"UT": "Utah",
-	"VT": "Vermont",
-	"VI": "Virgin Islands",
-	"VA": "Virginia",
-	"WA": "Washington",
-	"WV": "West Virginia",
-	"WI": "Wisconsin",
-	"WY": "Wyoming"
-}
+const states = [
+	{ name: "AL", value: "Alabama" },
+	{ name: "AK", value: "Alaska" },
+	{ name: "AS", value: "American Samoa" },
+	{ name: "AZ", value: "Arizona" },
+	{ name: "AR", value: "Arkansas" },
+	{ name: "CA", value: "California" },
+	{ name: "CO", value: "Colorado" },
+	{ name: "CT", value: "Connecticut" },
+	{ name: "DE", value: "Delaware" },
+	{ name: "DC", value: "District Of Columbia" },
+	{ name: "FM", value: "Federated States Of Micronesia" },
+	{ name: "FL", value: "Florida" },
+	{ name: "GA", value: "Georgia" },
+	{ name: "GU", value: "Guam" },
+	{ name: "HI", value: "Hawaii" },
+	{ name: "ID", value: "Idaho" },
+	{ name: "IL", value: "Illinois" },
+	{ name: "IN", value: "Indiana" },
+	{ name: "IA", value: "Iowa" },
+	{ name: "KS", value: "Kansas" },
+	{ name: "KY", value: "Kentucky" },
+	{ name: "LA", value: "Louisiana" },
+	{ name: "ME", value: "Maine" },
+	{ name: "MH", value: "Marshall Islands" },
+	{ name: "MD", value: "Maryland" },
+	{ name: "MA", value: "Massachusetts" },
+	{ name: "MI", value: "Michigan" },
+	{ name: "MN", value: "Minnesota" },
+	{ name: "MS", value: "Mississippi" },
+	{ name: "MO", value: "Missouri" },
+	{ name: "MT", value: "Montana" },
+	{ name: "NE", value: "Nebraska" },
+	{ name: "NV", value: "Nevada" },
+	{ name: "NH", value: "New Hampshire" },
+	{ name: "NJ", value: "New Jersey" },
+	{ name: "NM", value: "New Mexico" },
+	{ name: "NY", value: "New York" },
+	{ name: "NC", value: "North Carolina" },
+	{ name: "ND", value: "North Dakota" },
+	{ name: "MP", value: "Northern Mariana Islands" },
+	{ name: "OH", value: "Ohio" },
+	{ name: "OK", value: "Oklahoma" },
+	{ name: "OR", value: "Oregon" },
+	{ name: "PW", value: "Palau" },
+	{ name: "PA", value: "Pennsylvania" },
+	{ name: "PR", value: "Puerto Rico" },
+	{ name: "RI", value: "Rhode Island" },
+	{ name: "SC", value: "South Carolina" },
+	{ name: "SD", value: "South Dakota" },
+	{ name: "TN", value: "Tennessee" },
+	{ name: "TX", value: "Texas" },
+	{ name: "UT", value: "Utah" },
+	{ name: "VT", value: "Vermont" },
+	{ name: "VI", value: "Virgin Islands" },
+	{ name: "VA", value: "Virginia" },
+	{ name: "WA", value: "Washington" },
+	{ name: "WV", value: "West Virginia" },
+	{ name: "WI", value: "Wisconsin" },
+	{ name: "WY", value: "Wyoming" }
+]
 const STATES = [
 	"AL",
 	"AK",
@@ -126,8 +126,6 @@ const STATES = [
 	"WI",
 	"WY",
 ]
-
-/*
 
 DataRoutes.get("/updatedb/:date", async (req, res, next) => {
 	try {
@@ -517,6 +515,14 @@ DataRoutes.get("/updatedb/:date", async (req, res, next) => {
 		next(error);
 	}
 });
-*/
+
+DataRoutes.get("/allStates", async (req, res, next) => {
+	try {
+		res.status(200).send(states);
+	}
+	catch (error) {
+		next(error);
+	}
+});
 
 module.exports = DataRoutes;

@@ -31,6 +31,20 @@ ChartRoutes.get("/usamap", async (req, res, next) => {
         next(error)
     }
 })
+
+ChartRoutes.get("/:country/:state", async (req, res, next) => {
+    try {
+        let statesData = await Data.find({ "state": req.params.state });
+        if (statesData === null) {
+            next("No state found")
+        }
+        res.status(200).send(statesData);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // ====================== PUT ========================================
 
 module.exports = ChartRoutes;
