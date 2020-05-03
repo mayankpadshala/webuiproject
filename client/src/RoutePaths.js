@@ -15,6 +15,7 @@ class RoutePaths extends Component {
 				<Route exact path="/signup" component={Signup} />
 				{/* <Route exact path="/" component={Home} /> */}
 {/* =========================================== HOME ============================================== */}
+				<ProtectedRoute exact path="/" component={Home} />
 				<ProtectedRoute path="/home" component={Home} />
 			</div>
 		);

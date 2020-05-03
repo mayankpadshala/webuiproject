@@ -59,9 +59,9 @@ class Home extends React.Component {
 								path="/home/dashboard"
 								render={() => <Dashboard  history={this.props.history}/>}
 								/>
-							<Route
+							{/* <Route
 								render={() => <Root  history={this.props.history}/>}
-							/>
+							/> */}
 						</Switch>
 					</div>
 				</Content>
