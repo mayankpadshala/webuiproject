@@ -1,13 +1,14 @@
 import React from "react";
 import axios from "axios";
 import "../media/css/countriesMap.css";
-import { Row, Col } from "antd";
+import { Row, Col, Button } from "antd";
 import { VectorMap } from "react-jvectormap";
 
 class CountriesMap extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			rawData: [],
 			data: [],
 			displayData: {},
 			selected: {
@@ -34,6 +35,7 @@ class CountriesMap extends React.Component {
 				},
 				name: "United States of America",
 			},
+			scale:["#146804", "#ff0000"]
 		};
 	}
 	componentDidMount() {
@@ -55,6 +57,7 @@ class CountriesMap extends React.Component {
 				displayData[d.alpha2code] = d;
 			}
 			this.setState({
+				rawData:res.data.data,
 				data: mapData,
 				displayData: displayData,
 				selected: chartData[0],
@@ -71,7 +74,43 @@ class CountriesMap extends React.Component {
 		this.setState({
 			selected: d,
 		});
-	};
+    };
+    setCases = () => {
+		let mapData = {};
+		for (let i = 0; i < this.state.rawData.length; i++) {
+			let d = this.state.rawData[i];
+			mapData[d.alpha2code] = d.latestData.cases;
+			// displayData[d.alpha2code] = d;
+		}
+		this.setState({
+			data: mapData,
+			scale: ["#146804", "#ff0000"]
+		})
+    }
+    setDeaths = () => {
+        let mapData = {};
+		for (let i = 0; i < this.state.rawData.length; i++) {
+			let d = this.state.rawData[i];
+			mapData[d.alpha2code] = d.latestData.deaths;
+			// displayData[d.alpha2code] = d;
+		}
+		this.setState({
+			data: mapData,
+			scale: ["#146804", "#ff0000"]
+		})
+    }
+    setRecovery = () => {
+        let mapData = {};
+		for (let i = 0; i < this.state.rawData.length; i++) {
+			let d = this.state.rawData[i];
+			mapData[d.alpha2code] = d.latestData.recovered;
+			// displayData[d.alpha2code] = d;
+		}
+		this.setState({
+			data: mapData,
+			scale: ["#ff0000", "#146804"]
+		})
+    }
 	handleClick = (e, countryCode) => {
 		// console.log(countryCode);
 		this.setState({
@@ -79,12 +118,35 @@ class CountriesMap extends React.Component {
 		});
 	};
 	render() {
-		const { data, selected } = this.state;
+		const { data, selected, scale } = this.state;
 		// console.log('data',data);
 		return (
 			<div className="common-root">
 				<Row type="flex" justify="center">
 					<h1>Total Cases</h1>
+				</Row>
+                <Row type="flex" justify="center">
+					<Button
+						onClick={this.setCases}
+						type="primary"
+						ghost
+					>
+                        Cases
+                    </Button>
+                    <Button 
+						onClick={this.setDeaths}
+						type="primary"
+						ghost
+					>
+                        Deaths
+                    </Button>
+                    <Button
+						onClick={this.setRecovery}
+						type="primary"
+						ghost
+					>
+                        Recovery
+                    </Button>
 				</Row>
 				<Row>
 					<Col span={16}>
@@ -117,7 +179,7 @@ class CountriesMap extends React.Component {
 								regions: [
 									{
 										values: data, //this is your data
-										scale: ["#146804", "#ff0000"], //your color game's here
+										scale: scale, //your color game's here
 										normalizeFunction: "polynomial",
 									},
 								],
