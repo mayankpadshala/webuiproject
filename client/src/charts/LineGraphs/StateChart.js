@@ -12,6 +12,7 @@ class StateChart extends React.Component {
             dailyData: [],
             currentState: 'NY',
             states: [],
+            latestData: null,
         };
     }
     componentDidMount() {
@@ -23,8 +24,6 @@ class StateChart extends React.Component {
             const result = await axios.get(
                 `http://localhost:4001/data/allstates`
             );
-
-            console.log(result.data);
             this.setState({
                 states: result.data
             });
@@ -41,10 +40,12 @@ class StateChart extends React.Component {
             const res = await axios.get(
                 `http://localhost:4001/chart/usa/` + this.state.currentState
             );
-
-            console.log(res.data);
+            const r = await axios.get(
+                `http://localhost:4001/chart/usa/` + this.state.currentState + `/population`
+            );
             this.setState({
-                dailyData: res.data
+                dailyData: res.data,
+                latestData: r.data[0]
             });
         } catch (error) {
             if (error.response) {
@@ -82,7 +83,6 @@ class StateChart extends React.Component {
             "KY": "Kentucky",
             "LA": "Louisiana",
             "ME": "Maine",
-            "MH": "Marshall Islands",
             "MD": "Maryland",
             "MA": "Massachusetts",
             "MI": "Michigan",
@@ -123,7 +123,6 @@ class StateChart extends React.Component {
         const { Option } = Select;
 
         const onChange = async (value) => {
-            console.log(`selected ${value}`);
             await this.setState({ currentState: value })
             this.getData();
         }
@@ -185,12 +184,41 @@ class StateChart extends React.Component {
                             text: statesVar[this.state.currentState] + " Day to Day Trends",
                             fontSize: 20
                         },
+                        scales: {
+                            xAxes: [
+                                {
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Date (YearMonthDay Format)',
+                                        fontColor: '#C7C7CC',
+                                        fontSize: 16
+                                    }
+                                }
+                            ],
+                            yAxes: [
+                                {
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'People affected',
+                                        fontColor: '#C7C7CC',
+                                        fontSize: 16
+                                    }
+                                }
+                            ]
+                        },
                         legend: {
                             display: true,
                             position: 'top'
                         }
                     }}
                 />
+
+
+                <div>
+                    <p><b>State Population:</b> {this.state.latestData ? this.state.latestData.population : 0}</p>
+                    <p><b>Total Tests conducted: </b>{this.state.latestData ? this.state.latestData.totalTests : 0}</p>
+                    <p><b>Tests by state population:</b> {this.state.latestData ? ((this.state.latestData.totalTests * 100) / this.state.latestData.population).toFixed(2) : 0} %</p>
+                </div >
             </div >
         );
     }

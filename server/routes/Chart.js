@@ -54,6 +54,19 @@ ChartRoutes.get("/:country/:state", async (req, res, next) => {
     }
 });
 
+ChartRoutes.get("/:country/:state/population", async (req, res, next) => {
+    try {
+        let statesData = await Data.find({ "state": req.params.state }).sort({ 'date': -1 }).limit(1);
+        if (statesData === null) {
+            next("No state found")
+        }
+        res.status(200).send(statesData);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // ====================== PUT ========================================
 
 module.exports = ChartRoutes;

@@ -26,8 +26,6 @@ class States extends React.Component {
             const result = await axios.get(
                 `http://localhost:4001/data/allstates`
             );
-
-            console.log(result.data);
             this.setState({
                 states: result.data
             });
@@ -44,8 +42,6 @@ class States extends React.Component {
             const res = await axios.get(
                 `http://localhost:4001/chart/usa/` + this.state.currentState
             );
-
-            console.log(res.data);
             this.setState({
                 dailyData: res.data
             });
