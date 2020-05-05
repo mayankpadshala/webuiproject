@@ -3,6 +3,7 @@ import axios from "axios";
 import 'antd/dist/antd.css';
 import { Line } from 'react-chartjs-2';
 import { Select } from 'antd';
+import CountUp from 'react-countup';
 
 
 class StateChart extends React.Component {
@@ -151,9 +152,6 @@ class StateChart extends React.Component {
                     onFocus={onFocus}
                     onBlur={onBlur}
                     onSearch={onSearch}
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
                 >
                     {
                         this.state.states.map(s =>
@@ -215,8 +213,8 @@ class StateChart extends React.Component {
 
 
                 <div>
-                    <p><b>State Population:</b> {this.state.latestData ? this.state.latestData.population : 0}</p>
-                    <p><b>Total Tests conducted: </b>{this.state.latestData ? this.state.latestData.totalTests : 0}</p>
+                    <p><b>State Population:</b> {this.state.latestData ? <CountUp start={0} end={this.state.latestData.population} duration={1.75} separator="," /> : 0}</p>
+                    <p><b>Total Tests conducted: </b>{this.state.latestData ? <CountUp start={0} end={this.state.latestData.totalTests} duration={1.75} separator="," /> : 0}</p>
                     <p><b>Tests by state population:</b> {this.state.latestData ? ((this.state.latestData.totalTests * 100) / this.state.latestData.population).toFixed(2) : 0} %</p>
                 </div >
             </div >

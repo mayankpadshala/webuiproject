@@ -13,15 +13,46 @@ class Hom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentState: 'CA',
+            currentState: 'NY',
             stateData: null,
             states: [],
             data: [],
-            limit: 15,
+            limit: 5,
         };
     }
     componentDidMount() {
         this.getData();
+        this.getLocation();
+    }
+    getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.getCoordinates);
+        } else {
+            alert("Geolocation is not supported by this browser.")
+        }
+    }
+    getCoordinates = async (position) => {
+        try {
+            const r = await axios.get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&sensor=false&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+            );
+            // console.log('r',r.data);
+            let results = r.data.results;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].types[0] === "locality") {
+                    console.log('state', results[i].address_components[2].short_name);
+                    this.setState({
+                        currentState: results[i].address_components[2].short_name
+                    })
+                }
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log("response error", error.response.data);
+            } else {
+                console.log("error", error);
+            }
+        }
     }
     getData = async () => {
         try {
@@ -72,32 +103,92 @@ class Hom extends React.Component {
 
     };
 
+    onChange = async (value) => {
+        await this.setState({ currentState: value })
+        this.getData();
+    }
+
+    onBlur = async () => {
+        console.log('blur');
+    }
+
+    onFocus = async () => {
+        console.log('focus');
+    }
+
+    onSearch = async (val) => {
+        console.log('search:', val);
+    }
+    onFinishInput = async (values) => {
+        console.log(values)
+        await this.setState({ limit: values })
+        this.anayzeData();
+    };
     render() {
         const { stateData, currentState, data } = this.state;
 
         const { Option } = Select;
 
-        const onChange = async (value) => {
-            await this.setState({ currentState: value })
-            this.getData();
+        const statesVar = {
+            "AL": "Alabama",
+            "AK": "Alaska",
+            "AS": "American Samoa",
+            "AZ": "Arizona",
+            "AR": "Arkansas",
+            "CA": "California",
+            "CO": "Colorado",
+            "CT": "Connecticut",
+            "DE": "Delaware",
+            "DC": "District Of Columbia",
+            "FM": "Federated States Of Micronesia",
+            "FL": "Florida",
+            "GA": "Georgia",
+            "GU": "Guam",
+            "HI": "Hawaii",
+            "ID": "Idaho",
+            "IL": "Illinois",
+            "IN": "Indiana",
+            "IA": "Iowa",
+            "KS": "Kansas",
+            "KY": "Kentucky",
+            "LA": "Louisiana",
+            "ME": "Maine",
+            "MD": "Maryland",
+            "MA": "Massachusetts",
+            "MI": "Michigan",
+            "MN": "Minnesota",
+            "MS": "Mississippi",
+            "MO": "Missouri",
+            "MT": "Montana",
+            "NE": "Nebraska",
+            "NV": "Nevada",
+            "NH": "New Hampshire",
+            "NJ": "New Jersey",
+            "NM": "New Mexico",
+            "NY": "New York",
+            "NC": "North Carolina",
+            "ND": "North Dakota",
+            "MP": "Northern Mariana Islands",
+            "OH": "Ohio",
+            "OK": "Oklahoma",
+            "OR": "Oregon",
+            "PW": "Palau",
+            "PA": "Pennsylvania",
+            "PR": "Puerto Rico",
+            "RI": "Rhode Island",
+            "SC": "South Carolina",
+            "SD": "South Dakota",
+            "TN": "Tennessee",
+            "TX": "Texas",
+            "UT": "Utah",
+            "VT": "Vermont",
+            "VI": "Virgin Islands",
+            "VA": "Virginia",
+            "WA": "Washington",
+            "WV": "West Virginia",
+            "WI": "Wisconsin",
+            "WY": "Wyoming"
         }
-
-        const onBlur = async () => {
-            console.log('blur');
-        }
-
-        const onFocus = async () => {
-            console.log('focus');
-        }
-
-        const onSearch = async (val) => {
-            console.log('search:', val);
-        }
-        const onFinishInput = async (values) => {
-            console.log(values)
-            await this.setState({ limit: values })
-            this.anayzeData();
-        };
 
         return (
             <div className="common-root">
@@ -107,13 +198,10 @@ class Hom extends React.Component {
                         style={{ width: 200 }}
                         placeholder="Select a State"
                         optionFilterProp="children"
-                        onChange={onChange}
-                        onFocus={onFocus}
-                        onBlur={onBlur}
-                        onSearch={onSearch}
-                        filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                        onChange={this.onChange}
+                        onFocus={this.onFocus}
+                        onBlur={this.onBlur}
+                        onSearch={this.onSearch}
                     >
                         {
                             this.state.states.map(s =>
@@ -145,7 +233,7 @@ class Hom extends React.Component {
                                     legend: { display: false },
                                     title: {
                                         display: true,
-                                        text: `Current status in ${currentState}`,
+                                        text: `Current status in ${statesVar[currentState]}`,
                                         fontSize: 16
                                     },
                                     scales: {
@@ -267,7 +355,7 @@ class Hom extends React.Component {
 
                     <Input.Search
                         placeholder="input days"
-                        onSearch={onFinishInput}
+                        onSearch={this.onFinishInput}
                         style={{ width: 180 }}
                         enterButton="Analyze"
                     />
@@ -290,7 +378,7 @@ class Hom extends React.Component {
                             options={{
                                 title: {
                                     display: true,
-                                    text: this.state.currentState + " Day to Day Trends",
+                                    text: " Last " + this.state.limit + " Day Trend in " + statesVar[this.state.currentState],
                                     fontSize: 20
                                 },
                                 scales: {
