@@ -35,7 +35,8 @@ class CountriesMap extends React.Component {
 				},
 				name: "United States of America",
 			},
-			scale:["#146804", "#ff0000"]
+			scale:["#146804", "#ff0000"],
+			title: "Total Cases"
 		};
 	}
 	componentDidMount() {
@@ -84,7 +85,8 @@ class CountriesMap extends React.Component {
 		}
 		this.setState({
 			data: mapData,
-			scale: ["#146804", "#ff0000"]
+			scale: ["#146804", "#ff0000"],
+			title: "Total Cases"
 		})
     }
     setDeaths = () => {
@@ -96,7 +98,8 @@ class CountriesMap extends React.Component {
 		}
 		this.setState({
 			data: mapData,
-			scale: ["#146804", "#ff0000"]
+			scale: ["#146804", "#ff0000"],
+			title: "Total Deaths"
 		})
     }
     setRecovery = () => {
@@ -108,7 +111,8 @@ class CountriesMap extends React.Component {
 		}
 		this.setState({
 			data: mapData,
-			scale: ["#ff0000", "#146804"]
+			scale: ["#ff0000", "#146804"],
+			title: "Total Recovered"
 		})
     }
 	handleClick = (e, countryCode) => {
@@ -118,12 +122,12 @@ class CountriesMap extends React.Component {
 		});
 	};
 	render() {
-		const { data, selected, scale } = this.state;
+		const { data, selected, scale, title } = this.state;
 		// console.log('data',data);
 		return (
 			<div className="common-root">
 				<Row type="flex" justify="center">
-					<h1>Total Cases</h1>
+					<h1>{title}</h1>
 				</Row>
                 <Row type="flex" justify="center">
 					<Button
