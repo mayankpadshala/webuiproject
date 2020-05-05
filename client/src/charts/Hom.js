@@ -2,23 +2,26 @@ import React from "react";
 import axios from "axios";
 import { Row, Col } from "antd";
 import 'antd/dist/antd.css';
-import { Bar } from 'react-chartjs-2';
-import { Select, Card } from 'antd';
+import { Line, Bar } from 'react-chartjs-2';
+import { Menu, Dropdown, message, Button, Select, Card, Form, Input } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import CountUp from 'react-countup';
-
+import StateChart from './LineGraphs/StateChart'
+import "../media/css/login.css";
 
 class Hom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentState: 'AK',
+            currentState: 'CA',
             stateData: null,
-            states: []
+            states: [],
+            data: [],
+            limit: 15,
         };
     }
     componentDidMount() {
         this.getData();
-        this.getLocation();
     }
     getData = async () => {
         try {
@@ -28,9 +31,13 @@ class Hom extends React.Component {
             const result = await axios.get(
                 `http://localhost:4001/data/allstates`
             );
+            const res = await axios.get(
+                `http://localhost:4001/chart/usa/` + this.state.currentState + `/limit/` + this.state.limit
+            );
             this.setState({
                 stateData: r.data[0],
-                states: result.data
+                states: result.data,
+                data: res.data,
             });
         } catch (error) {
             if (error.response) {
@@ -41,35 +48,14 @@ class Hom extends React.Component {
         }
     };
 
-    onClick = async ({ key }) => {
-        // message.info(`Click on item ${key}`);
-        await this.setState({ currentState: key })
-        this.getData();
-
-    };
-
-    getLocation = () => {
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(this.getCoordinates);
-        }else{
-            alert("Geolocation is not supported by this browser.")
-        }
-    }
-    getCoordinates = async (position) => {
+    anayzeData = async () => {
         try {
-            const r = await axios.get(
-                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&sensor=false&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+            const res = await axios.get(
+                `http://localhost:4001/chart/usa/` + this.state.currentState + `/limit/` + this.state.limit
             );
-            // console.log('r',r.data);
-            let results = r.data.results;
-            for (var i = 0; i < results.length; i++) {
-                if (results[i].types[0] === "locality") {
-                    console.log('state',results[i].address_components[2].short_name);
-                    this.setState({
-                        currentState: results[i].address_components[2].short_name
-                    })
-                }
-            }
+            this.setState({
+                data: res.data,
+            });
         } catch (error) {
             if (error.response) {
                 console.log("response error", error.response.data);
@@ -78,24 +64,41 @@ class Hom extends React.Component {
             }
         }
     }
-    onChange = async (value) => {
-        await this.setState({ currentState: value })
+
+    onClick = async ({ key }) => {
+        // message.info(`Click on item ${key}`);
+        await this.setState({ currentState: key })
         this.getData();
-    }
-    onBlur = async () => {
-        console.log('blur');
-    }
 
-    onFocus = async () => {
-        console.log('focus');
-    }
+    };
 
-    onSearch = async (val) => {
-        console.log('search:', val);
-    }
     render() {
-        const { stateData, currentState } = this.state;
+        const { stateData, currentState, data } = this.state;
+
         const { Option } = Select;
+
+        const onChange = async (value) => {
+            await this.setState({ currentState: value })
+            this.getData();
+        }
+
+        const onBlur = async () => {
+            console.log('blur');
+        }
+
+        const onFocus = async () => {
+            console.log('focus');
+        }
+
+        const onSearch = async (val) => {
+            console.log('search:', val);
+        }
+        const onFinishInput = async (values) => {
+            console.log(values)
+            await this.setState({ limit: values })
+            this.anayzeData();
+        };
+
         return (
             <div className="common-root">
                 <Row type="flex" justify="center">
@@ -104,17 +107,17 @@ class Hom extends React.Component {
                         style={{ width: 200 }}
                         placeholder="Select a State"
                         optionFilterProp="children"
-                        onChange={this.onChange}
-                        onFocus={this.onFocus}
-                        onBlur={this.onBlur}
-                        onSearch={this.onSearch}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        onSearch={onSearch}
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
                         {
                             this.state.states.map(s =>
-                                <Option key={s.name} value={s.name}>{s.value}</Option>
+                                <Option value={s.name}>{s.value}</Option>
                             )
                         }
                     </Select>
@@ -256,8 +259,73 @@ class Hom extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-                <Row gutter={16}>
+                <Row style={{ height: 32 }}>
+
                 </Row>
+                <Row justify="center">
+                    <h1>Analyze trends of past. Enter number of days to analyze and get a idea about how coronavirus is spreading.</h1>
+
+                    <Input.Search
+                        placeholder="input days"
+                        onSearch={onFinishInput}
+                        style={{ width: 180 }}
+                        enterButton="Analyze"
+                    />
+                </Row>
+                <Row>
+                    <Col span={4}>
+                    </Col>
+                    <Col span={16}>
+                        <Line
+                            data={{
+                                labels: data.map(({ date }) => date),
+                                datasets: [{
+                                    data: data.map((data) => data.positiveIncrease),
+                                    label: 'Daily Positive cases Increase',
+                                    borderColor: '#3333ff',
+                                    fill: true,
+                                },
+                                ],
+                            }}
+                            options={{
+                                title: {
+                                    display: true,
+                                    text: this.state.currentState + " Day to Day Trends",
+                                    fontSize: 20
+                                },
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Date (YearMonthDay Format)',
+                                                fontColor: '#C7C7CC',
+                                                fontSize: 16
+                                            }
+                                        }
+                                    ],
+                                    yAxes: [
+                                        {
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'People affected',
+                                                fontColor: '#C7C7CC',
+                                                fontSize: 16
+                                            }
+                                        }
+                                    ]
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            }}
+                        />
+
+                    </Col>
+                    <Col span={4}>
+                    </Col>
+                </Row >
             </div >
         );
     }

@@ -67,6 +67,38 @@ ChartRoutes.get("/:country/:state/population", async (req, res, next) => {
     }
 });
 
+
+const sort_by = (field, reverse, primer) => {
+
+    const key = primer ?
+        function (x) {
+            return primer(x[field])
+        } :
+        function (x) {
+            return x[field]
+        };
+
+    reverse = !reverse ? 1 : -1;
+
+    return function (a, b) {
+        return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+    }
+}
+
+
+ChartRoutes.get("/:country/:state/limit/:lmt", async (req, res, next) => {
+    try {
+        let statesData = await Data.find({ "state": req.params.state }).sort({ 'date': -1 }).limit(parseInt(req.params.lmt));
+        if (statesData === null) {
+            next("No state found")
+        }
+        console.log(statesData.sort(sort_by('date', true, parseInt)));
+        res.status(200).send(statesData.sort(sort_by('date', false, parseInt)));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 // ====================== PUT ========================================
 
 module.exports = ChartRoutes;
