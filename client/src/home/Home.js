@@ -11,14 +11,10 @@ const { Header, Content, Footer } = Layout;
 
 class Home extends React.Component {
 	handleLogout = () => {
-		// e.preventDefault();
 		UserStatus.logOut();
 		this.props.history.push("/login");
-		// this.props.logout();
 	};
 	componentDidMount() {
-		// this.props.history.push("/home/cricketer/create");
-		// this.props.history.push("/home/cricketer/list");
 	}
 	render() {
 		return (
@@ -31,10 +27,10 @@ class Home extends React.Component {
 						defaultSelectedKeys={["1"]}
 						style={{ lineHeight: "64px" }}
 					>
-						<Menu.Item key="1" onClick={() => this.props.history.push("/home/root")} >Home</Menu.Item>
-						<Menu.Item key="2" onClick={() => this.props.history.push("/home/dashboard")} >Dashboard</Menu.Item>
-						<Menu.Item key="3" onClick={() => this.props.history.push("/home/states")} >States</Menu.Item>
-						<Menu.Item key="4" onClick={() => this.props.history.push("/home/hom")} >Hom</Menu.Item>
+						<Menu.Item key="1" onClick={() => this.props.history.push("/home/")} >Home</Menu.Item>
+						<Menu.Item key="2" onClick={() => this.props.history.push("/home/world")} >World</Menu.Item>
+						<Menu.Item key="3" onClick={() => this.props.history.push("/home/USA")} >USA</Menu.Item>
+						<Menu.Item key="4" onClick={() => this.props.history.push("/home/states")} >States</Menu.Item>
 						<Menu.Item
 							key="5"
 							className="logout-btn"
@@ -55,12 +51,18 @@ class Home extends React.Component {
 						}}
 					>
 						<Switch>
+
 							<Route
-								path="/home/root"
+								exact
+								path="/home/"
+								render={() => <Hom history={this.props.history} />}
+							/>
+							<Route
+								path="/home/world"
 								render={() => <Root history={this.props.history} />}
 							/>
 							<Route
-								path="/home/dashboard"
+								path="/home/USA"
 								render={() => <Dashboard history={this.props.history} />}
 							/>
 							<Route
@@ -68,7 +70,6 @@ class Home extends React.Component {
 								render={() => <States history={this.props.history} />}
 							/>
 							<Route
-								path="/home/hom"
 								render={() => <Hom history={this.props.history} />}
 							/>
 						</Switch>

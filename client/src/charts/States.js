@@ -2,9 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Row, Col } from "antd";
 import 'antd/dist/antd.css';
-import { Line } from 'react-chartjs-2';
-import { Menu, Dropdown, message, Button, Select } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Select } from 'antd';
 
 import StateChart from "./LineGraphs/StateChart"
 
