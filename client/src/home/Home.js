@@ -6,6 +6,7 @@ import Root from "./Root";
 import Dashboard from "./Dashboard";
 import UserStatus from "../UserStatus";
 import States from "../charts/States";
+import Hom from "../charts/Hom";
 const { Header, Content, Footer } = Layout;
 
 class Home extends React.Component {
@@ -33,8 +34,9 @@ class Home extends React.Component {
 						<Menu.Item key="1" onClick={() => this.props.history.push("/home/root")} >Home</Menu.Item>
 						<Menu.Item key="2" onClick={() => this.props.history.push("/home/dashboard")} >Dashboard</Menu.Item>
 						<Menu.Item key="3" onClick={() => this.props.history.push("/home/states")} >States</Menu.Item>
+						<Menu.Item key="4" onClick={() => this.props.history.push("/home/hom")} >Hom</Menu.Item>
 						<Menu.Item
-							key="4"
+							key="5"
 							className="logout-btn"
 							onClick={this.handleLogout}
 						>
@@ -64,6 +66,10 @@ class Home extends React.Component {
 							<Route
 								path="/home/states"
 								render={() => <States history={this.props.history} />}
+							/>
+							<Route
+								path="/home/hom"
+								render={() => <Hom history={this.props.history} />}
 							/>
 						</Switch>
 					</div>
