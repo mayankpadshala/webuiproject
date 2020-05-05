@@ -2,24 +2,23 @@ import React from "react";
 import axios from "axios";
 import { Row, Col } from "antd";
 import 'antd/dist/antd.css';
-import { Line, Bar } from 'react-chartjs-2';
-import { Menu, Dropdown, message, Button, Select, Card } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Bar } from 'react-chartjs-2';
+import { Select, Card } from 'antd';
 import CountUp from 'react-countup';
 
-import StateChart from "./LineGraphs/StateChart"
 
 class Hom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentState: 'CA',
+            currentState: 'AK',
             stateData: null,
             states: []
         };
     }
     componentDidMount() {
         this.getData();
+        this.getLocation();
     }
     getData = async () => {
         try {
@@ -49,27 +48,54 @@ class Hom extends React.Component {
 
     };
 
+    getLocation = () => {
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(this.getCoordinates);
+        }else{
+            alert("Geolocation is not supported by this browser.")
+        }
+    }
+    getCoordinates = async (position) => {
+        try {
+            const r = await axios.get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&sensor=false&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+            );
+            // console.log('r',r.data);
+            let results = r.data.results;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].types[0] === "locality") {
+                    console.log('state',results[i].address_components[2].short_name);
+                    this.setState({
+                        currentState: results[i].address_components[2].short_name
+                    })
+                }
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log("response error", error.response.data);
+            } else {
+                console.log("error", error);
+            }
+        }
+    }
+    onChange = async (value) => {
+        await this.setState({ currentState: value })
+        this.getData();
+    }
+    onBlur = async () => {
+        console.log('blur');
+    }
+
+    onFocus = async () => {
+        console.log('focus');
+    }
+
+    onSearch = async (val) => {
+        console.log('search:', val);
+    }
     render() {
         const { stateData, currentState } = this.state;
-
         const { Option } = Select;
-
-        const onChange = async (value) => {
-            await this.setState({ currentState: value })
-            this.getData();
-        }
-
-        const onBlur = async () => {
-            console.log('blur');
-        }
-
-        const onFocus = async () => {
-            console.log('focus');
-        }
-
-        const onSearch = async (val) => {
-            console.log('search:', val);
-        }
         return (
             <div className="common-root">
                 <Row type="flex" justify="center">
@@ -78,17 +104,17 @@ class Hom extends React.Component {
                         style={{ width: 200 }}
                         placeholder="Select a State"
                         optionFilterProp="children"
-                        onChange={onChange}
-                        onFocus={onFocus}
-                        onBlur={onBlur}
-                        onSearch={onSearch}
+                        onChange={this.onChange}
+                        onFocus={this.onFocus}
+                        onBlur={this.onBlur}
+                        onSearch={this.onSearch}
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
                         {
                             this.state.states.map(s =>
-                                <Option value={s.name}>{s.value}</Option>
+                                <Option key={s.name} value={s.name}>{s.value}</Option>
                             )
                         }
                     </Select>
