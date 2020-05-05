@@ -3,11 +3,11 @@ import axios from "axios";
 import { Row, Col } from "antd";
 import 'antd/dist/antd.css';
 import { Line, Bar } from 'react-chartjs-2';
-import { Menu, Dropdown, message, Button, Select, Card } from 'antd';
+import { Menu, Dropdown, message, Button, Select, Card, Form, Input } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import CountUp from 'react-countup';
-
-import StateChart from "./LineGraphs/StateChart"
+import StateChart from './LineGraphs/StateChart'
+import "../media/css/login.css";
 
 class Hom extends React.Component {
     constructor(props) {
@@ -15,7 +15,9 @@ class Hom extends React.Component {
         this.state = {
             currentState: 'CA',
             stateData: null,
-            states: []
+            states: [],
+            data: [],
+            limit: 15,
         };
     }
     componentDidMount() {
@@ -29,9 +31,13 @@ class Hom extends React.Component {
             const result = await axios.get(
                 `http://localhost:4001/data/allstates`
             );
+            const res = await axios.get(
+                `http://localhost:4001/chart/usa/` + this.state.currentState + `/limit/` + this.state.limit
+            );
             this.setState({
                 stateData: r.data[0],
-                states: result.data
+                states: result.data,
+                data: res.data,
             });
         } catch (error) {
             if (error.response) {
@@ -42,6 +48,23 @@ class Hom extends React.Component {
         }
     };
 
+    anayzeData = async () => {
+        try {
+            const res = await axios.get(
+                `http://localhost:4001/chart/usa/` + this.state.currentState + `/limit/` + this.state.limit
+            );
+            this.setState({
+                data: res.data,
+            });
+        } catch (error) {
+            if (error.response) {
+                console.log("response error", error.response.data);
+            } else {
+                console.log("error", error);
+            }
+        }
+    }
+
     onClick = async ({ key }) => {
         // message.info(`Click on item ${key}`);
         await this.setState({ currentState: key })
@@ -50,7 +73,7 @@ class Hom extends React.Component {
     };
 
     render() {
-        const { stateData, currentState } = this.state;
+        const { stateData, currentState, data } = this.state;
 
         const { Option } = Select;
 
@@ -70,6 +93,12 @@ class Hom extends React.Component {
         const onSearch = async (val) => {
             console.log('search:', val);
         }
+        const onFinishInput = async (values) => {
+            console.log(values)
+            await this.setState({ limit: values })
+            this.anayzeData();
+        };
+
         return (
             <div className="common-root">
                 <Row type="flex" justify="center">
@@ -230,8 +259,73 @@ class Hom extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-                <Row gutter={16}>
+                <Row style={{ height: 32 }}>
+
                 </Row>
+                <Row justify="center">
+                    <h1>Analyze trends of past. Enter number of days to analyze and get a idea about how coronavirus is spreading.</h1>
+
+                    <Input.Search
+                        placeholder="input days"
+                        onSearch={onFinishInput}
+                        style={{ width: 180 }}
+                        enterButton="Analyze"
+                    />
+                </Row>
+                <Row>
+                    <Col span={4}>
+                    </Col>
+                    <Col span={16}>
+                        <Line
+                            data={{
+                                labels: data.map(({ date }) => date),
+                                datasets: [{
+                                    data: data.map((data) => data.positiveIncrease),
+                                    label: 'Daily Positive cases Increase',
+                                    borderColor: '#3333ff',
+                                    fill: true,
+                                },
+                                ],
+                            }}
+                            options={{
+                                title: {
+                                    display: true,
+                                    text: this.state.currentState + " Day to Day Trends",
+                                    fontSize: 20
+                                },
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Date (YearMonthDay Format)',
+                                                fontColor: '#C7C7CC',
+                                                fontSize: 16
+                                            }
+                                        }
+                                    ],
+                                    yAxes: [
+                                        {
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'People affected',
+                                                fontColor: '#C7C7CC',
+                                                fontSize: 16
+                                            }
+                                        }
+                                    ]
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            }}
+                        />
+
+                    </Col>
+                    <Col span={4}>
+                    </Col>
+                </Row >
             </div >
         );
     }
