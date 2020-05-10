@@ -398,7 +398,7 @@ class Hom extends React.Component {
                     </Col>
                     <Col span={4}>
                         <Card>
-                            <h3>Increase in Test Cases Science Yesterday</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.totalTestsIncrease} duration={1.75} separator="," /> : 0}</h1>
+                            <h3>TestCase Increase from Yesterday</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.totalTestsIncrease} duration={1.75} separator="," /> : 0}</h1>
                         </Card>
                     </Col >
                     <Col span={1}>
