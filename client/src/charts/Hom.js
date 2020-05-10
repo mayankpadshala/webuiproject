@@ -190,6 +190,16 @@ class Hom extends React.Component {
             "WY": "Wyoming"
         }
 
+        const inputStr = <div>
+            <h3>Change Number of Days</h3>
+            <Input.Search
+                placeholder="Input Days"
+                onSearch={this.onFinishInput}
+                style={{ width: 176 }}
+                enterButton="Analyze"
+            />
+        </div>
+
         return (
             <div className="common-root">
                 <Row type="flex" justify="center">
@@ -269,150 +279,135 @@ class Hom extends React.Component {
                         }
                     </Col>
                     <Col span={16}>
-                        <Row>
 
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Active Infected cases" bordered={true}>
-                                    <p style={{ color: 'blue' }}>{stateData ? <CountUp start={0} end={stateData.positive - stateData.recovered} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Total People Recovered" bordered={true}>
-                                    <p style={{ color: 'green' }}>{stateData ? <CountUp start={0} end={stateData.recovered} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Total People Died" bordered={true}>
-                                    <p style={{ color: 'red' }}>{stateData ? <CountUp start={0} end={stateData.death} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row type="flex" justify="center" style={{ height: 16 }}>
-                        </Row>
                         <Row>
+                            <Col span={2}>
+                            </Col>
+                            <Col span={16}>
+                                <Line
+                                    data={{
+                                        labels: data.map(({ date }) => date),
+                                        datasets: [{
+                                            data: data.map((data) => data.positiveIncrease),
+                                            label: 'Daily Positive cases Increase',
+                                            borderColor: '#3333ff',
+                                            fill: true,
+                                        },
+                                        ],
+                                    }}
+                                    options={{
+                                        title: {
+                                            display: true,
+                                            text: " Last " + this.state.limit + " Day Trend in " + statesVar[this.state.currentState],
+                                            fontSize: 20
+                                        },
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: 'Date (YearMonthDay Format)',
+                                                        fontColor: '#C7C7CC',
+                                                        fontSize: 16
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: 'People affected',
+                                                        fontColor: '#C7C7CC',
+                                                        fontSize: 16
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        legend: {
+                                            display: true,
+                                            position: 'top'
+                                        }
+                                    }}
+                                />
 
-                            <Col span={1}>
                             </Col>
-                            <Col span={7}>
-                                <Card title="Positive Increase Cases today" bordered={true}>
-                                    <p style={{ color: 'black' }}>{stateData ? <CountUp start={0} end={stateData.positiveIncrease} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
+                            <Col span={6}>
+                                <Row type="flex" justify="center">
+                                    {inputStr}
+                                </Row>
                             </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Neagtive Cases till Today" bordered={true}>
-                                    <p style={{ color: 'black' }}> {stateData ? <CountUp start={0} end={stateData.negative} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Incrase in Neagtive Cases Today" bordered={true}>
-                                    <p style={{ color: 'black' }}>{stateData ? <CountUp start={0} end={stateData.negativeIncrease} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row type="flex" justify="center" style={{ height: 16 }}>
-                        </Row>
-                        <Row>
+                        </Row >
 
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Total People Tested till date" bordered={true}>
-                                    <p style={{ color: 'black' }}>{stateData ? <CountUp start={0} end={stateData.totalTests} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Increase in Test Cases Science Yesterday" bordered={true}>
-                                    <p style={{ color: 'black' }}>{stateData ? <CountUp start={0} end={stateData.totalTestsIncrease} duration={1.75} separator="," /> : 0}</p>
-                                </Card>
-                            </Col>
-                            <Col span={1}>
-                            </Col>
-                            <Col span={7}>
-                                <Card title="Total population of State" bordered={true}>
-                                    <p style={{ color: 'black' }}> {stateData ? <CountUp start={0} end={stateData.population} duration={1.75} separator="," /> : 0} </p>
-                                </Card>
-                            </Col>
-                        </Row>
                     </Col>
                 </Row>
                 <Row style={{ height: 32 }}>
 
                 </Row>
-                <Row justify="center">
-                    <h1>Analyze trends of past. Enter number of days to analyze and get a idea about how coronavirus is spreading.</h1>
+                <Row>
+                    <Col span={4}>
+                        <Card >
+                            <h3>Active Infected cases</h3><h1 style={{ color: 'blue', margin: 0 }}>  {stateData ? <CountUp start={0} end={stateData.positive - stateData.recovered} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col>
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Total People Recovered</h3><h1 style={{ color: 'green', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.recovered} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col>
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Total People Died</h3><h1 style={{ color: 'red', margin: 0 }} >{stateData ? <CountUp start={0} end={stateData.death} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col>
 
-                    <Input.Search
-                        placeholder="input days"
-                        onSearch={this.onFinishInput}
-                        style={{ width: 180 }}
-                        enterButton="Analyze"
-                    />
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Positive Increase Cases today</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.positiveIncrease} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col>
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Neagtive Cases till Today</h3><h1 style={{ color: 'black', margin: 0 }}> {stateData ? <CountUp start={0} end={stateData.negative} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col>
+                </Row >
+                <Row type="flex" justify="center" style={{ height: 16 }}>
                 </Row>
                 <Row>
                     <Col span={4}>
+                        <Card>
+                            <h3>Incrase in Neagtive Cases Today</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.negativeIncrease} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
                     </Col>
-                    <Col span={16}>
-                        <Line
-                            data={{
-                                labels: data.map(({ date }) => date),
-                                datasets: [{
-                                    data: data.map((data) => data.positiveIncrease),
-                                    label: 'Daily Positive cases Increase',
-                                    borderColor: '#3333ff',
-                                    fill: true,
-                                },
-                                ],
-                            }}
-                            options={{
-                                title: {
-                                    display: true,
-                                    text: " Last " + this.state.limit + " Day Trend in " + statesVar[this.state.currentState],
-                                    fontSize: 20
-                                },
-                                scales: {
-                                    xAxes: [
-                                        {
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'Date (YearMonthDay Format)',
-                                                fontColor: '#C7C7CC',
-                                                fontSize: 16
-                                            }
-                                        }
-                                    ],
-                                    yAxes: [
-                                        {
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'People affected',
-                                                fontColor: '#C7C7CC',
-                                                fontSize: 16
-                                            }
-                                        }
-                                    ]
-                                },
-                                legend: {
-                                    display: true,
-                                    position: 'top'
-                                }
-                            }}
-                        />
-
+                    <Col span={1}>
                     </Col>
                     <Col span={4}>
+                        <Card>
+                            <h3>Total People Tested till date</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.totalTests} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
                     </Col>
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Increase in Test Cases Science Yesterday</h3><h1 style={{ color: 'black', margin: 0 }}>{stateData ? <CountUp start={0} end={stateData.totalTestsIncrease} duration={1.75} separator="," /> : 0}</h1>
+                        </Card>
+                    </Col >
+                    <Col span={1}>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <h3>Total population of State</h3><h1 style={{ color: 'black', margin: 0 }}> {stateData ? <CountUp start={0} end={stateData.population} duration={1.75} separator="," /> : 0} </h1>
+                        </Card>
+                    </Col >
                 </Row >
             </div >
         );
